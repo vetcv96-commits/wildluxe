@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WildLuxe — National Parks RV Atlas</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#07090b">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="WildLuxe">
+<link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#07090b;--fg:#f1ece1;--mut:#9a978d;--gold:#d8b36a;--card:rgba(255,255,255,.045);--line:rgba(216,179,106,.22);--glass:rgba(10,12,14,.72);--sans:Inter,system-ui,sans-serif;--serif:Fraunces,Georgia,serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){color-scheme:light;--bg:#f6f1e7;--fg:#1b1a16;--mut:#6d6a5e;--gold:#9a6f1c;--card:rgba(0,0,0,.04);--line:rgba(154,111,28,.3);--glass:rgba(246,241,231,.8)}}
+:root[data-theme="dark"]{color-scheme:dark}:root[data-theme="light"]{color-scheme:light;--bg:#f6f1e7;--fg:#1b1a16;--mut:#6d6a5e;--gold:#9a6f1c;--card:rgba(0,0,0,.04);--line:rgba(154,111,28,.3);--glass:rgba(246,241,231,.8)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:300 16px/1.6 var(--sans);overflow-x:hidden}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;justify-content:space-between;align-items:center;padding:14px 5vw;background:var(--glass);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--glass)}
+.logo{font:600 22px var(--serif);letter-spacing:.14em;color:var(--gold)}nav small{color:var(--mut);letter-spacing:.2em;text-transform:uppercase;font-size:11px}
+.hero{--fg:#f1ece1;--mut:#d3cdbb;--gold:#d8b36a;color:#f1ece1;text-shadow:0 2px 24px rgba(0,0,0,.65);position:relative;height:88vh;min-height:520px;display:grid;place-items:center;text-align:center;overflow:hidden}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,var(--bg) 92%);pointer-events:none}
+.hero div{position:relative;z-index:2;padding:0 5vw;animation:rise 1.6s cubic-bezier(.2,.8,.2,1) both}
+.eyebrow{letter-spacing:.4em;text-transform:uppercase;font-size:12px;color:var(--gold)}
+h1{font:300 clamp(40px,8vw,104px)/1.02 var(--serif);margin:.2em 0}h1 em{color:var(--gold);font-style:italic}
+.hero p{max-width:620px;margin:0 auto 28px;color:var(--mut)}
+.btn{display:inline-block;padding:14px 34px;border:1px solid var(--gold);color:var(--gold);background:none;border-radius:99px;font:600 12px var(--sans);letter-spacing:.2em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:.4s}
+.btn:hover{background:var(--gold);color:#111;box-shadow:0 0 40px -6px var(--gold)}
+@keyframes rise{from{opacity:0;transform:translateY(40px);filter:blur(10px)}}
+.stats{display:flex;justify-content:center;gap:5vw;flex-wrap:wrap;padding:34px 5vw;border-block:1px solid var(--line)}
+.stats b{display:block;font:300 44px var(--serif);color:var(--gold)}.stats span{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--mut)}
+section{padding:70px 5vw}h2{font:300 clamp(30px,4vw,52px) var(--serif);margin:0 0 8px}
+.bar{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 34px;align-items:center}
+.chip,.fchip,select,input{background:var(--card);border:1px solid var(--line);color:var(--fg);padding:10px 18px;border-radius:99px;font:400 13px var(--sans);cursor:pointer}
+.chip.on,.fchip.on{background:var(--gold);color:#111;border-color:var(--gold)}.hrt{position:absolute;right:18px;top:58px;background:none;border:0;color:var(--gold);font-size:24px;cursor:pointer;z-index:2}input{cursor:text;min-width:200px}select option{color:#111}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px;perspective:1200px}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px;cursor:pointer;transform:rotateX(var(--rx,0))rotateY(var(--ry,0));transition:transform .25s,border-color .3s,opacity .9s,translate .9s;opacity:0;translate:0 40px;overflow:hidden}
+.card.in{opacity:1;translate:0}.card:hover{border-color:var(--gold);box-shadow:0 30px 60px -30px #000}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,0),rgba(216,179,106,.18),transparent 55%);pointer-events:none}
+.card h3{font:400 26px var(--serif);margin:0}.st{color:var(--mut);font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+.badge{float:right;padding:3px 12px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid var(--gold);color:var(--gold)}
+.meta{display:flex;justify-content:space-between;margin:16px 0 10px;font-size:13px;color:var(--mut)}.meta b{color:var(--fg);font-weight:600}
+.mini{display:flex;gap:3px;align-items:flex-end;height:34px}.mini i{flex:1;background:var(--gold);border-radius:2px;opacity:.28;transition:.5s}.mini i.cur{opacity:1}
+#modal{position:fixed;inset:0;z-index:40;display:none;place-items:center;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);padding:3vw}
+#modal.open{display:grid;animation:fade .4s}@keyframes fade{from{opacity:0}}
+.panel{width:min(880px,100%);max-height:90vh;overflow:auto;background:var(--bg);border:1px solid var(--gold);border-radius:26px;padding:clamp(22px,4vw,48px);animation:rise .7s both}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;margin:22px 0}
+.panel h4{margin:0 0 6px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;font-size:11px}.panel ul{margin:0;padding-left:18px}
+.chart{display:flex;gap:6px;align-items:flex-end;height:110px;margin:10px 0 4px}.chart div{flex:1;text-align:center;font-size:10px;color:var(--mut)}.chart i{display:block;border-radius:5px 5px 0 0;background:linear-gradient(var(--gold),transparent);margin-bottom:4px;transition:height 1s}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.out{white-space:pre-wrap;margin-top:16px;padding:16px;border:1px dashed var(--line);border-radius:14px;color:var(--mut);display:none}
+.x{float:right;background:none;border:0;color:var(--fg);font-size:28px;cursor:pointer}
+footer{padding:40px 5vw 60px;color:var(--mut);font-size:13px;border-top:1px solid var(--line)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@keyframes tw{0%,100%{opacity:.2}50%{opacity:1}}@keyframes bt{0%,100%{opacity:.6}50%{opacity:1}}.star{animation:tw 4s ease-in-out infinite}.bl{animation:bt 3.4s ease-in-out infinite}
+.aur{transform-box:fill-box;transform-origin:50% 100%;animation:au 16s ease-in-out infinite alternate}@keyframes au{to{transform:translateX(70px) scaleY(1.12)}}.aur2{animation:au2 12s ease-in-out infinite alternate}@keyframes au2{to{opacity:.2}}
+.shoot{opacity:0;animation:sh 11s linear infinite}@keyframes sh{0%,88%{opacity:0;transform:translate(0,0)}90%{opacity:1}100%{opacity:0;transform:translate(-260px,95px)}}
+.f1,.f2,.f3{transform-box:fill-box;transform-origin:50% 100%}.f1{animation:fl 2.6s ease-in-out infinite}.f2{animation:fl 2.1s ease-in-out infinite .3s}.f3{animation:fl 1.7s ease-in-out infinite .6s}@keyframes fl{0%,100%{transform:scale(1,1) skewX(0)}30%{transform:scale(.94,1.1) skewX(3deg)}65%{transform:scale(1.04,.93) skewX(-3deg)}}
+.fglow{animation:gl 3.2s ease-in-out infinite}@keyframes gl{50%{opacity:.75}}
+.smk{fill:#9aa3b5;opacity:0;transform-box:fill-box;transform-origin:center;animation:sm 7s ease-out infinite}@keyframes sm{0%{opacity:0;transform:translate(0,0) scale(.5)}20%{opacity:.22}100%{opacity:0;transform:translate(40px,-260px) scale(2.6)}}
+.em{animation:em 5s ease-out infinite}@keyframes em{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),-230px)}}
+.ff{animation:ff 9s ease-in-out infinite}@keyframes ff{0%,100%{opacity:0;transform:translate(0,0)}25%{opacity:1}50%{transform:translate(var(--dx),var(--dy));opacity:.3}75%{opacity:1}}
+.pn{transform-box:fill-box;transform-origin:50% 100%;animation:sw 6s ease-in-out infinite alternate}@keyframes sw{to{transform:skewX(1.6deg)}}
+.ms{animation:ms 20s ease-in-out infinite alternate}@keyframes ms{to{transform:translateX(90px)}}.par{transition:transform .7s ease-out}
+</style></head><body>
+<nav><span class="logo">WILDLUXE</span><small>National Parks · RV Atlas</small><button class="fchip" id="th">◐ Theme</button></nav>
+<header class="hero"><svg id='cv' viewBox='0 0 1600 900' preserveAspectRatio='xMidYMax slice' aria-hidden='true'>
+<defs>
+<linearGradient id='sk' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#060a1a'/><stop offset='.55' stop-color='#1a1a45'/><stop offset='.85' stop-color='#5a2f5a'/><stop offset='1' stop-color='#d9784c'/></linearGradient>
+<linearGradient id='au' x1='0' y1='1' x2='0' y2='0'><stop offset='0' stop-color='#3dffa8' stop-opacity='0'/><stop offset='.4' stop-color='#3dffa8' stop-opacity='.55'/><stop offset='1' stop-color='#9b6bff' stop-opacity='0'/></linearGradient>
+<radialGradient id='gl'><stop offset='0' stop-color='#ffb347' stop-opacity='.95'/><stop offset='1' stop-color='#ff6a1a' stop-opacity='0'/></radialGradient>
+<radialGradient id='mn'><stop offset='0' stop-color='#fff6dc' stop-opacity='.5'/><stop offset='1' stop-color='#fff6dc' stop-opacity='0'/></radialGradient>
+<linearGradient id='lk' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#2a4a78'/><stop offset='1' stop-color='#0f2038'/></linearGradient>
+<filter id='bl' x='-10%' y='-30%' width='120%' height='160%'><feGaussianBlur stdDeviation='18'/></filter><filter id='b2'><feGaussianBlur stdDeviation='2.5'/></filter>
+</defs>
+<rect width='1600' height='900' fill='url(#sk)'/><g id='stars'></g>
+<circle cx='1230' cy='170' r='150' fill='url(#mn)'/><circle cx='1230' cy='170' r='46' fill='#fff4d6'/><circle cx='1214' cy='160' r='9' fill='#e9dcb8' opacity='.6'/>
+<g class='aur' filter='url(#bl)'><path d='M0 330C250 150 450 330 700 200S1150 120 1600 280V80H0Z' fill='url(#au)'/><path class='aur2' d='M0 250C300 90 520 260 800 130S1250 60 1600 190V40H0Z' fill='url(#au)' opacity='.6'/></g>
+<line class='shoot' x1='400' y1='120' x2='300' y2='165' stroke='#fff' stroke-width='2.5' stroke-linecap='round'/>
+<g class='par' data-p='5'><path d='M0 650L170 460 300 540 470 360 640 560 780 480 960 330 1140 540 1280 450 1440 380 1600 540V720H0Z' fill='#26275a'/><g fill='#cfd6f0' opacity='.8'><polygon points='470,360 419,420 445,408 470,430 497,410 521,420'/><polygon points='960,330 882,395 920,382 960,405 998,384 1016,395'/><polygon points='1440,380 1395,420 1425,412 1445,430 1470,414 1495,425'/><polygon points='170,460 140,490 165,484 180,495 200,486'/></g></g>
+<g class='par' data-p='10'><path d='M0 720L110 600 250 670 420 540 590 680 760 620 930 700 1100 580 1280 670 1450 560 1600 650V780H0Z' fill='#18223f'/></g>
+<g class='par' data-p='16' id='pb'></g>
+<ellipse cx='1220' cy='742' rx='320' ry='40' fill='url(#lk)'/>
+<g fill='#fff4d6'><rect class='star' x='1195' y='722' width='70' height='3' rx='1.5' opacity='.4'/><rect class='star' x='1205' y='732' width='50' height='3' rx='1.5' style='animation-delay:-1s'/><rect class='star' x='1188' y='742' width='84' height='3' rx='1.5' style='animation-delay:-2s'/><rect class='star' x='1210' y='752' width='44' height='3' rx='1.5' style='animation-delay:-3s'/><rect class='star' x='1198' y='762' width='66' height='3' rx='1.5' style='animation-delay:-.5s'/></g>
+<ellipse class='ms' cx='1100' cy='722' rx='170' ry='14' fill='#b9c6dd' opacity='.14' filter='url(#bl)'/><ellipse class='ms' cx='1380' cy='738' rx='150' ry='12' fill='#b9c6dd' opacity='.12' filter='url(#bl)' style='animation-delay:-8s'/>
+<g><animateTransform attributeName='transform' type='translate' values='0 0;0 3;0 0' dur='4s' repeatCount='indefinite'/><ellipse cx='1152' cy='754' rx='62' ry='4' fill='#0a1626' opacity='.5'/><path d='M1090 744Q1150 772 1215 744 1150 754 1090 744Z' fill='#b2402e'/></g>
+<path d='M0 826C260 782 560 806 800 812S1260 790 1600 818V900H0Z' fill='#0b1522'/>
+<ellipse class='fglow' cx='800' cy='850' rx='470' ry='64' fill='url(#gl)' opacity='.3'/>
+<g transform='translate(90 770)'><rect x='28' y='40' width='9' height='80' fill='#3b2616'/><rect x='168' y='40' width='9' height='80' fill='#3b2616'/><rect x='6' y='0' width='192' height='62' rx='5' fill='#4b3220' stroke='#d8b36a' stroke-width='3'/><text x='102' y='30' text-anchor='middle' font-family='Georgia,serif' font-weight='600' font-size='20' fill='#d8b36a'>NATIONAL PARK</text><text x='102' y='50' text-anchor='middle' font-family='Georgia,serif' font-size='13' fill='#f1ece1'>Camping · RV · Trails</text></g>
+<g><ellipse cx='435' cy='848' rx='150' ry='14' fill='url(#gl)' opacity='.35'/><polygon points='340,770 470,770 484,792 326,792' fill='#b2402e'/><rect x='330' y='790' width='150' height='52' rx='6' fill='#e9e5dc'/><path d='M480 790H520L542 812V842H480Z' fill='#d8b36a'/><rect x='330' y='818' width='212' height='8' fill='#d8b36a'/><g fill='#ffcf80'><rect x='348' y='798' width='38' height='18' rx='3'/><rect x='398' y='798' width='38' height='18' rx='3'/></g><circle cx='367' cy='807' r='34' fill='url(#gl)' opacity='.4'/><circle cx='417' cy='807' r='34' fill='url(#gl)' opacity='.4'/><polygon points='490,796 518,796 534,812 490,812' fill='#9ab8d8'/><g fill='#111'><circle cx='365' cy='844' r='16'/><circle cx='505' cy='844' r='16'/></g><g fill='#555'><circle cx='365' cy='844' r='6'/><circle cx='505' cy='844' r='6'/></g></g>
+<g><polygon points='552,846 640,705 728,846' fill='#d9722b'/><polygon points='640,705 728,846 640,846' fill='#b95a1c'/><polygon class='fglow' points='618,846 640,780 662,846' fill='#ffc46b'/><line x1='640' y1='705' x2='640' y2='780' stroke='#8a3f10' stroke-width='3'/></g>
+<path id='sp' d='M350 768Q500 830 640 706 790 830 930 730' fill='none' stroke='#3b2e22' stroke-width='1.5' opacity='.7'/><rect x='926' y='730' width='8' height='112' fill='#4b3220'/><g id='bulbs'></g>
+<g transform='translate(800 848)'>
+<circle class='fglow' cy='-40' r='200' fill='url(#gl)'/>
+<g fill='#6b665e'><ellipse cx='-62' cy='4' rx='13' ry='9'/><ellipse cx='-34' cy='12' rx='13' ry='9'/><ellipse cx='0' cy='15' rx='13' ry='9'/><ellipse cx='34' cy='12' rx='13' ry='9'/><ellipse cx='62' cy='4' rx='13' ry='9'/></g>
+<rect x='-48' y='-6' width='96' height='14' rx='7' fill='#3b2616' transform='rotate(-12)'/><rect x='-48' y='-6' width='96' height='14' rx='7' fill='#4b3220' transform='rotate(12)'/>
+<path class='f1' d='M0 2C-36-10-44-52-14-90-12-64 0-60 4-96 32-66 40-26 0 2Z' fill='#ff5a14'/><path class='f2' d='M0 2C-22-6-26-36-8-60-6-44 2-42 4-64 20-44 24-16 0 2Z' fill='#ffa21f'/><path class='f3' d='M0 2C-12-4-13-22-3-36 4-24 10-16 0 2Z' fill='#ffe27a'/>
+<g id='embers'></g><circle class='smk' cy='-90' r='18'/><circle class='smk' cy='-90' r='16' style='animation-delay:-2.3s'/><circle class='smk' cy='-90' r='20' style='animation-delay:-4.6s'/></g>
+<g transform='translate(1010 818)' fill='#2c1d12'><ellipse cx='0' cy='-34' rx='34' ry='16'/><g stroke='#2c1d12' stroke-width='5'><line x1='-22' y1='-26' x2='-24' y2='0'/><line x1='-10' y1='-24' x2='-8' y2='0'/><line x1='14' y1='-24' x2='16' y2='0'/><line x1='26' y1='-26' x2='28' y2='0'/></g><circle cx='-34' cy='-40' r='4' fill='#eee'/><g><animateTransform attributeName='transform' type='rotate' values='0 28 -40;24 28 -40;0 28 -40' dur='8s' repeatCount='indefinite'/><path d='M26-40L46-64 58-60 38-34Z'/><ellipse cx='60' cy='-61' rx='12' ry='7'/></g></g>
+<g id='ffs'></g><g class='par' data-p='34' id='pf'></g>
+</svg>
+<div><p class="eyebrow">America’s Greatest Landscapes</p><h1>Chart your <em>open road</em></h1>
+<p>Fees, RV parking limits, best seasons and signature experiences for every great park — scored by month so you arrive at the perfect moment.</p>
+<a class="btn" href="#explore">Begin exploring</a></div></header>
+<div class="stats"><div><b id="s1">62</b><span>Park entries · 63 parks</span></div><div><b>12</b><span>Month scoring</span></div><div><b id="s2">0</b><span>Peak right now</span></div><div><b>$80</b><span>Annual pass (verify)</span></div></div>
+<section id="explore"><h2>Plan by season</h2><p style="color:var(--mut);margin:0">Pick a month — parks re-rank by how good that month is.</p>
+<div class="bar"><span id="seas"></span><select id="mon"></select><input id="q" placeholder="Search park, state or airport…"><button class="fchip" id="fFree">Free entry</button><button class="fchip" id="fHook">Hookups</button><button class="fchip" id="fDrive">Drive-up</button><button class="fchip" id="fFav">♥ My trip <span id="fc">0</span></button><button class="fchip" id="cp">Copy trip plan</button><button class="fchip" id="rnd">🎲 Surprise me</button><select id="sort"><option value="rank">Best now</option><option value="az">A–Z</option><option value="fee">Lowest fee</option></select></div>
+<div class="grid" id="grid"></div></section>
+<div id="modal"><div class="panel" id="panel"></div></div>
+<footer>Snapshot data: fees, limits and seasonality are summaries and change often (timed entry, closures, road limits). Confirm on nps.gov and recreation.gov before you go — each park’s detail view links the official forecast and sources. A published page cannot pull live feeds from other sites, so live weather opens the National Weather Service forecast for the park’s exact coordinates.</footer>
+
+<script>
+const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],L=['','Avoid','Fair','Good','Great','Peak'];
+const P=[
+["Yellowstone","WY · MT · ID",44.43,-110.59,"$35 / vehicle (7 days)","Five NPS campgrounds; only Fishing Bridge has full RV hookups. Many sites fit ~40 ft — reserve months ahead. Winter roads limited to snowcoach.","112555555553111","Jul 80°F · Jan 20°F","Old Faithful & geyser basins|Grand Prismatic Spring|Hayden Valley wildlife|Grand Canyon of the Yellowstone|Winter snowcoach tours"],
+["Yosemite","CA",37.87,-119.54,"$35 / vehicle (7 days)","No hookups in-park; most valley sites ≤35 ft. Tioga Road closes roughly Nov–May. Reservations required in peak season.","223455445542","Jul 90°F · Jan 48°F","Tunnel View & Valley loop|Half Dome & Mist Trail|Glacier Point|Mariposa Grove sequoias|Tuolumne Meadows"],
+["Grand Canyon","AZ",36.06,-112.14,"$35 / vehicle (7 days)","Trailer Village on the South Rim has the only full hookups; Mather and Desert View are dry. Big rigs fit best at Trailer Village.","334553224543","Rim Jul 84°F · Jan 41°F","Rim Trail sunrise|Bright Angel Trail|Desert View Drive|Mule rides|Colorado River rafting"],
+["Zion","UT",37.30,-113.03,"$35 / vehicle (7 days)","Watchman Campground has electric hookups. Oversize RVs need a permit for the Zion–Mt Carmel tunnel (≈11′4″ tall / 7′10″ wide limit).","234542222542","Jul 100°F · Jan 53°F","The Narrows|Angels Landing (permit)|Emerald Pools|Scenic canyon shuttle|Kolob Canyons"],
+["Glacier","MT",48.76,-113.80,"$35 / vehicle (7 days)","Going-to-the-Sun Road restricts vehicles over 21 ft long, 8 ft wide, 10 ft tall. Apgar and Many Glacier fill early; use shuttles.","111124554211","Jul 78°F · Jan 27°F","Going-to-the-Sun Road|Highline Trail|Lake McDonald|Many Glacier|Grinnell Glacier"],
+["Rocky Mountain","CO",40.34,-105.68,"$30 / vehicle (timed entry in summer)","Moraine Park and Glacier Basin take RVs (no hookups). Trail Ridge Road open ~late May to mid-Oct; check length limits.","222345555422","Jul 78°F · Jan 33°F","Trail Ridge Road|Bear Lake|Elk rut (Sep–Oct)|Alpine tundra walks|Longs Peak"],
+["Acadia","ME",44.35,-68.21,"$35 / vehicle (7 days)","Blackwoods and Seawall; no hookups, ~35 ft limit. Private RV parks in Bar Harbor offer hookups. Book early for summer and foliage.","111234555521","Jul 76°F · Jan 30°F","Cadillac Mountain sunrise|Park Loop Road|Jordan Pond|Carriage roads|Lobster in Bar Harbor"],
+["Great Smoky Mountains","TN · NC",35.61,-83.50,"Free entry · $5/day parking tag","Elkmont, Cades Cove and Smokemont take RVs (about 35–40 ft). No hookups; nearby Gatlinburg and Cherokee have full-service parks.","223454444542","Jul 80°F · Jan 45°F","Cades Cove loop|Clingmans Dome|Alum Cave Trail|Synchronous fireflies (late May)|October foliage"],
+["Arches","UT",38.73,-109.59,"$30 / vehicle (timed entry Apr–Oct)","Devils Garden has no hookups and fills fast; Moab RV parks (full hookups) are 5 miles away.","235542224542","Jul 100°F · Jan 44°F","Delicate Arch|Landscape Arch|The Windows|Fiery Furnace (permit)|Dark-sky stargazing"],
+["Grand Teton","WY",43.79,-110.68,"$35 / vehicle (7 days)","Colter Bay RV Park has full hookups; Gros Ventre is the largest campground. Seasonal closures Oct–May.","111235555411","Jul 80°F · Jan 25°F","Jenny Lake|Snake River float|Schwabacher Landing|Mormon Row|Moose and elk spotting"],
+["Olympic","WA",47.80,-123.60,"$30 / vehicle (7 days)","Sol Duc has hookups; Kalaloch and Hoh are dry. Narrow forest roads — check length limits.","223455554322","Jul 75°F · Jan 45°F","Hoh Rain Forest|Hurricane Ridge|Ruby Beach|Sol Duc hot springs|Lake Crescent"],
+["Joshua Tree","CA",33.88,-115.90,"$30 / vehicle (7 days)","No hookups; Jumbo Rocks and Cottonwood fit smaller RVs, Black Rock has water. Hookup parks just outside the gates.","445421112455","Jul 100°F · Jan 62°F","Hidden Valley scrambles|Keys View|Cholla Cactus Garden|Dark-sky stargazing|Spring wildflowers"],
+["Everglades","FL",25.29,-80.90,"$35 / vehicle (7 days)","Flamingo and Long Pine Key take RVs; no hookups. Summer brings heavy mosquitoes and storms.","555421111245","Jul 91°F · Jan 78°F","Anhinga Trail|Airboat tours|Flamingo kayaking|Shark Valley tram|Birding"],
+["Death Valley","CA · NV",36.46,-116.83,"$30 / vehicle (7 days)","Furnace Creek has full hookups; others are dry. Avoid summer — extreme heat and tire risk.","455421112455","Jul 117°F · Jan 67°F","Badwater Basin|Zabriskie Point|Mesquite Flat Dunes|Dante’s View|Artists Drive"],
+["Sequoia & Kings Canyon","CA",36.49,-118.57,"$35 / vehicle (7 days)","Lodgepole and Dorst take RVs; Generals Highway is not advised for vehicles over ~22 ft from the south entrance.","223455555422","Jul 78°F · Jan 45°F","General Sherman Tree|Moro Rock|Crystal Cave|Kings Canyon Scenic Byway|Mineral King"]
+].map(a=>({n:a[0],s:a[1],la:a[2],lo:a[3],fee:a[4],rv:a[5],sc:[...a[6]].map(Number),t:a[7],td:a[8].split('|')}));
+`Denali|AK|63.33|-150.50|$15 per person|Riley Creek and Teklanika take RVs (no hookups). Private vehicles only go ~15 miles; shuttle buses beyond.|111245553111|Jul 65°F · Jan 5°F|Park Road bus to Wonder Lake;Views of Denali peak;Sled dog kennels;Winter aurora
+Gates of the Arctic|AK|67.78|-153.30|Free|No roads and no RV access. Fly in from Bettles or Coldfoot.|111124542111|Jul 68°F · Jan -10°F|Backpack the Brooks Range;Float wild rivers;Aurora viewing
+Glacier Bay|AK|58.50|-136.90|Free|Reached by boat or air only. Leave RVs in Gustavus or Juneau.|111235554111|Jul 62°F · Jan 30°F|Tidewater glacier cruises;Sea kayaking;Whale watching
+Katmai|AK|58.50|-155.00|Free|Fly-in or boat only from King Salmon. No RV access.|111124554111|Jul 63°F · Jan 20°F|Brooks Falls bear viewing;Valley of Ten Thousand Smokes;Fishing
+Kenai Fjords|AK|59.92|-149.65|Free|Exit Glacier Road area has tent camping; full-hookup RV parks in Seward.|111245554111|Jul 62°F · Jan 25°F|Exit Glacier hike;Fjord boat cruises;Harding Icefield Trail
+Kobuk Valley|AK|67.35|-159.28|Free|Remote fly-in from Kotzebue. No RV access.|111114441111|Jul 66°F · Jan -10°F|Great Kobuk Sand Dunes;Caribou migration;River floats
+Lake Clark|AK|60.30|-153.90|Free|Fly-in from Anchorage or Kenai. No RV access.|111124551111|Jul 62°F · Jan 15°F|Coastal bear viewing;Fishing;Twin Lakes
+Wrangell–St. Elias|AK|61.00|-142.00|Free|McCarthy Road is 60 miles of gravel; RVs not advised. RV parks at Chitina.|111135553111|Jul 65°F · Jan 0°F|Kennecott mine ghost town;Root Glacier hike;Flightseeing
+Petrified Forest|AZ|34.98|-109.79|$25 / vehicle|No developed campground (backcountry permits). RV parks in Holbrook ~25 mi.|345542234543|Jul 97°F · Jan 50°F|Rainbow Forest petrified logs;Painted Desert Rim;Puerco Pueblo petroglyphs
+Saguaro|AZ|32.25|-110.50|$25 / vehicle|No in-park RV camping. Tucson RV parks and Gilbert Ray (county) nearby.|455421112455|Jul 100°F · Jan 66°F|Saguaro forests;Sunset hikes;Hohokam petroglyphs
+Hot Springs|AR|34.51|-93.05|Free|Gulpha Gorge Campground has hookup sites (~40 ft).|224553224542|Jul 92°F · Jan 50°F|Bathhouse Row soak;Hot Springs Mountain Tower;Thermal springs
+Channel Islands|CA|34.01|-119.42|Free|Boat or plane only; park RV in Ventura or Oxnard.|223454555432|Jul 72°F · Jan 62°F|Sea cave kayaking;Island fox spotting;Whale watching
+Lassen Volcanic|CA|40.49|-121.51|$30 / vehicle|Manzanita Lake and Southwest Walk-in take RVs (no hookups). Highway closes in winter.|111124555311|Jul 80°F · Jan 35°F|Lassen Peak hike;Bumpass Hell;Manzanita Lake
+Pinnacles|CA|36.49|-121.16|$30 / vehicle|Pinnacles Campground (east side) has hookups.|445542223454|Jul 95°F · Jan 60°F|Condor spotting;Bear Gulch talus caves;High Peaks Trail
+Redwood|CA|41.21|-124.00|Free|Jedediah Smith and Mill Creek take RVs (~36 ft limit). Check scenic road limits.|223445555422|Jul 62°F · Jan 52°F|Fern Canyon;Tall Trees Grove;Newton B. Drury Parkway
+Black Canyon of the Gunnison|CO|38.57|-107.72|$30 / vehicle|South Rim Campground (some electric). East Portal road steep; RV limits apply.|112345555421|Jul 83°F · Jan 35°F|Painted Wall overlook;Gunnison River;Dark-sky stargazing
+Great Sand Dunes|CO|37.73|-105.51|$25 per person|Piñon Flats Campground takes RVs (no hookups). Reserve early.|223455555422|Jul 85°F · Jan 35°F|Sandboarding;Medano Creek (late spring);Stargazing
+Mesa Verde|CO|37.18|-108.49|$30 / vehicle|Morefield Campground has hookups; big rigs OK but Chapin Mesa roads are winding.|112355555421|Jul 87°F · Jan 40°F|Cliff Palace tour;Balcony House;Chapin Mesa Museum
+Biscayne|FL|25.48|-80.21|Free|Mostly water; boat access. Hookup RV parks in Homestead.|555432222345|Jul 90°F · Jan 76°F|Snorkel the reef;Boca Chita Key;Boat tours
+Dry Tortugas|FL|24.63|-82.87|$15 per person|Ferry or seaplane from Key West. Stay in Key West RV parks.|455543333444|Jul 90°F · Jan 75°F|Fort Jefferson;Snorkeling;Birding
+Haleakalā|HI|20.72|-156.17|$30 / vehicle|Hosmer Grove and Kalahaku camp areas. RV rentals are rare on Maui.|334455555433|Jul 70°F · Jan 65°F|Summit sunrise (reservation);Sliding Sands Trail;Kīpahulu pools
+Hawaiʻi Volcanoes|HI|19.42|-155.29|$30 / vehicle|Nāmakanilau Campground; no hookups, limited RV rentals on the island.|444444444444|Jul 80°F · Jan 74°F|Kīlauea summit;Chain of Craters Road;Thurston Lava Tube
+Indiana Dunes|IN|41.65|-87.05|$25 / vehicle|Dunewood Campground; full-hookup RV parks nearby.|112345555421|Jul 82°F · Jan 30°F|Beach and dunes;Mount Baldy;Cowles Bog
+Mammoth Cave|KY|37.19|-86.10|Free (cave tours extra)|Mammoth Cave Campground (~35 ft, no hookups); private RV parks nearby.|223455555532|Jul 87°F · Jan 45°F|Cave tours;Green River paddling;Cedar Sink
+Isle Royale|MI|48.10|-88.55|$7 per person / day|Ferry or seaplane only; no vehicles. Leave RV in Houghton or Copper Harbor.|111114554111|Jul 72°F · Jan 18°F|Greenstone Ridge backpacking;Moose and wolves;Kayaking
+Voyageurs|MN|48.50|-92.88|Free|Mostly boat access; Ash River and Kabetogama have RV parks nearby.|112345554311|Jul 78°F · Jan 15°F|Houseboat stays;Kayaking;Northern lights
+Gateway Arch|MO|38.62|-90.19|Free (tram extra)|City park; RV parks in the St. Louis area.|223454445532|Jul 90°F · Jan 40°F|Arch tram;Old Courthouse;Riverfront
+Great Basin|NV|38.98|-114.30|Free|Upper Lehman Creek and Wheeler Peak campgrounds (small RVs). Scenic Drive closes in winter.|112345555421|Jul 80°F · Jan 35°F|Lehman Caves;Bristlecone pines;Stargazing
+Carlsbad Caverns|NM|32.15|-104.56|$15 per person|No in-park campground; Whites City RV parks outside the gate.|334554555543|Jul 93°F · Jan 58°F|Big Room tour;Summer bat flight;Natural Entrance
+White Sands|NM|32.78|-106.17|$25 per person|No RV camping in park; Alamogordo RV parks ~15 mi.|445543334554|Jul 95°F · Jan 56°F|Dune sledding;Full-moon nights;Interdune Boardwalk
+Theodore Roosevelt|ND|46.97|-103.45|$30 / vehicle|Cottonwood (South Unit) and Juniper (North Unit) take RVs, no hookups.|112345555421|Jul 85°F · Jan 20°F|Bison and wild horses;Scenic Loop Drive;Painted Canyon
+Cuyahoga Valley|OH|41.24|-81.55|Free|No RV camping in park; nearby campgrounds and private parks.|223455555532|Jul 82°F · Jan 33°F|Brandywine Falls;Towpath bike ride;Scenic Railroad
+Crater Lake|OR|42.94|-122.17|$30 / vehicle (summer)|Mazama Village has RV sites with hookups. Rim Drive closes in winter.|111124555311|Jul 70°F · Jan 33°F|Rim Drive;Wizard Island;Cleetwood Cove
+Congaree|SC|33.79|-80.78|Free|Primitive camping only; RV parks in Columbia ~30 mi.|445542224554|Jul 92°F · Jan 56°F|Boardwalk loop;Canoe Cedar Creek;Synchronous fireflies
+Badlands|SD|43.75|-102.50|$30 / vehicle|Cedar Pass has hookups; Sage Creek is primitive.|112355555421|Jul 88°F · Jan 30°F|Badlands Loop Road;Fossil exhibits;Sage Creek bison
+Wind Cave|SD|43.57|-103.48|Free|Elk Mountain Campground; no hookups.|112345555421|Jul 85°F · Jan 35°F|Cave tours;Bison herds;Rankin Ridge
+Big Bend|TX|29.25|-103.25|$30 / vehicle|Rio Grande Village RV Park has full hookups; other sites dry. Avoid summer heat.|555421112355|Jul 100°F · Jan 62°F|Santa Elena Canyon;Chisos Basin;Hot springs;Stargazing
+Guadalupe Mountains|TX|31.92|-104.87|$10 per person|Pine Springs Campground takes RVs (no hookups). High winds are common.|334543334543|Jul 88°F · Jan 52°F|Guadalupe Peak;McKittrick Canyon fall color;Salt Basin Dunes
+Bryce Canyon|UT|37.59|-112.19|$35 / vehicle|North and Sunset campgrounds take RVs (no hookups); Ruby’s Inn has full hookups.|223455555422|Jul 83°F · Jan 38°F|Sunrise Point;Navajo Loop;Rainbow Point;Stargazing
+Canyonlands|UT|38.20|-109.93|$30 / vehicle|Willow Flat (Island in the Sky) has no hookups; Moab RV parks nearby.|235542224542|Jul 98°F · Jan 42°F|Mesa Arch sunrise;Grand View Point;White Rim Road
+Capitol Reef|UT|38.37|-111.26|$20 / vehicle|Fruita Campground (~35 ft, no hookups). Reserve in spring and fall.|234543235532|Jul 92°F · Jan 42°F|Hickman Bridge;Scenic Drive;Fruita orchards
+Virgin Islands|VI|18.34|-64.74|Free (Trunk Bay fee)|On St. John; ferry from St. Thomas. No RV travel; Cinnamon Bay camping.|555432222345|Jul 90°F · Jan 83°F|Trunk Bay snorkeling;Reef Bay Trail;Beaches
+American Samoa|AS|-14.25|-170.68|Free|Remote Pacific park; no RV travel.|333345555433|Jul 87°F · Jan 88°F|Tropical rainforest;Coral reefs;Fruit bats
+Shenandoah|VA|38.53|-78.44|$30 / vehicle|Big Meadows and Mathews Arm take RVs (no hookups). Skyline Drive has height limits at tunnels.|223455555532|Jul 82°F · Jan 42°F|Skyline Drive;Old Rag;Stony Man;Fall foliage
+Mount Rainier|WA|46.85|-121.75|$30 / vehicle|Cougar Rock Campground (no hookups). Paradise road closes in winter.|111234555311|Jul 70°F · Jan 30°F|Paradise wildflowers;Skyline Trail;Sunrise Visitor Area
+North Cascades|WA|48.70|-121.20|Free|Newhalem Creek Campground. Highway 20 closes in winter.|111134555311|Jul 75°F · Jan 35°F|Diablo Lake overlook;Maple Pass Loop;Ross Lake
+New River Gorge|WV|38.07|-81.08|Free|Park campgrounds are small; full-hookup RV parks in Fayetteville area.|223455555532|Jul 85°F · Jan 40°F|Whitewater rafting;Bridge Day (October);Endless Wall`.split('\n').forEach(l=>{const a=l.split('|');P.push({n:a[0],s:a[1],la:+a[2],lo:+a[3],fee:a[4],rv:a[5],sc:[...a[6].padEnd(12,'3').slice(0,12)].map(Number),t:a[7],td:a[8].split(';')})});
+`Yellowstone=BZN Bozeman ~90 mi · WYS West Yellowstone ~1 mi (seasonal) · JAC Jackson ~100 mi
+Yosemite=FAT Fresno ~95 mi · SFO San Francisco ~190 mi
+Grand Canyon=GCN Grand Canyon National ~8 mi (limited) · FLG Flagstaff ~80 mi · PHX Phoenix ~230 mi
+Zion=SGU St. George ~45 mi · LAS Las Vegas ~160 mi
+Glacier=FCA Glacier Park Intl ~30 mi
+Rocky Mountain=DEN Denver ~75 mi
+Acadia=BHB Bar Harbor ~10 mi · BGR Bangor ~50 mi
+Great Smoky Mountains=TYS Knoxville ~45 mi · AVL Asheville ~65 mi
+Arches=CNY Canyonlands Field ~18 mi · GJT Grand Junction ~110 mi
+Grand Teton=JAC Jackson Hole ~10 mi
+Olympic=CLM Port Angeles ~5 mi (small) · SEA Seattle ~100 mi
+Joshua Tree=PSP Palm Springs ~45 mi · ONT Ontario ~80 mi
+Everglades=MIA Miami ~45 mi
+Death Valley=LAS Las Vegas ~120 mi
+Sequoia & Kings Canyon=FAT Fresno ~60–75 mi
+Denali=FAI Fairbanks ~120 mi · ANC Anchorage ~240 mi
+Gates of the Arctic=BTT Bettles (air taxi from FAI Fairbanks)
+Glacier Bay=GST Gustavus ~10 mi (flights from JNU Juneau)
+Katmai=AKN King Salmon (flights from ANC Anchorage), then floatplane
+Kenai Fjords=ANC Anchorage ~125 mi · SWD Seward (small)
+Kobuk Valley=OTZ Kotzebue (air taxi into park)
+Lake Clark=PNP Port Alsworth (air taxi from ANC Anchorage)
+Wrangell–St. Elias=GKN Gulkana (small) · ANC Anchorage ~300 mi
+Petrified Forest=FLG Flagstaff ~110 mi · ABQ Albuquerque ~200 mi
+Saguaro=TUS Tucson ~15 mi
+Hot Springs=HOT Hot Springs Memorial ~5 mi · LIT Little Rock ~60 mi
+Channel Islands=OXR Oxnard ~10 mi · SBA Santa Barbara ~40 mi
+Lassen Volcanic=RDD Redding ~55 mi
+Pinnacles=SJC San Jose ~80 mi · MRY Monterey ~60 mi
+Redwood=ACV Arcata-Eureka ~40 mi
+Black Canyon of the Gunnison=MTJ Montrose ~15 mi
+Great Sand Dunes=ALS Alamosa ~35 mi · COS Colorado Springs ~120 mi
+Mesa Verde=CEZ Cortez ~10 mi · DRO Durango ~35 mi
+Biscayne=MIA Miami ~30 mi
+Dry Tortugas=EYW Key West (ferry or seaplane)
+Haleakalā=OGG Kahului ~35 mi
+Hawaiʻi Volcanoes=ITO Hilo ~30 mi · KOA Kona ~100 mi
+Indiana Dunes=MDW Chicago Midway ~50 mi · SBN South Bend ~45 mi
+Mammoth Cave=BWG Bowling Green ~35 mi · SDF Louisville ~90 mi
+Isle Royale=CMX Houghton (ferry or seaplane)
+Voyageurs=INL International Falls ~15 mi
+Gateway Arch=STL St. Louis Lambert ~15 mi
+Great Basin=ELY Ely ~65 mi · SLC Salt Lake City ~230 mi
+Carlsbad Caverns=CNM Carlsbad ~25 mi · ELP El Paso ~150 mi
+White Sands=ELP El Paso ~90 mi · ALM Alamogordo ~15 mi
+Theodore Roosevelt=DIK Dickinson ~35 mi · BIS Bismarck ~135 mi
+Cuyahoga Valley=CLE Cleveland Hopkins ~30 mi
+Crater Lake=LMT Klamath Falls ~60 mi · MFR Medford ~80 mi
+Congaree=CAE Columbia ~20 mi
+Badlands=RAP Rapid City ~75 mi
+Wind Cave=RAP Rapid City ~65 mi
+Big Bend=MRF Marfa ~120 mi · MAF Midland ~230 mi
+Guadalupe Mountains=CNM Carlsbad ~55 mi · ELP El Paso ~110 mi
+Bryce Canyon=BCE Bryce Canyon ~3 mi (limited) · CDC Cedar City ~80 mi
+Canyonlands=CNY Canyonlands Field ~25 mi · GJT Grand Junction ~120 mi
+Capitol Reef=CDC Cedar City ~135 mi · SLC Salt Lake City ~220 mi
+Virgin Islands=STT St. Thomas (then ferry to St. John)
+American Samoa=PPG Pago Pago
+Shenandoah=CHO Charlottesville ~30 mi · IAD Washington Dulles ~75 mi
+Mount Rainier=SEA Seattle ~85 mi
+North Cascades=BLI Bellingham ~70 mi · SEA Seattle ~130 mi
+New River Gorge=BKW Beckley ~20 mi · CRW Charleston ~65 mi`.split('\n').forEach(l=>{const[k,v]=l.split('=');const p=P.find(x=>x.n==k);if(p)p.ap=v});
+const SE={All:null,Winter:[11,0,1],Spring:[2,3,4],Summer:[5,6,7],Fall:[8,9,10]};
+let mon=new Date().getMonth(),se='All',qs='';
+const F={free:0,hook:0,drive:0,fav:0};let favs=new Set();try{favs=new Set(JSON.parse(localStorage.getItem('wl')||'[]'))}catch(e){}
+const fee=p=>{const m=/\$(\d+)/.exec(p.fee);return m?+m[1]:0},
+flt=p=>(!F.free||/^Free/.test(p.fee))&&(!F.hook||/(full|electric|has|have|with)( RV)? hookups?|hookup sites/i.test(p.rv))&&(!F.drive||!/fly-in|boat or|boat access|ferry|seaplane|air taxi|no roads|no RV travel|remote/i.test(p.rv))&&(!F.fav||favs.has(P.indexOf(p)));
+function tog(i){favs.has(i)?favs.delete(i):favs.add(i);try{localStorage.setItem('wl',JSON.stringify([...favs]))}catch(e){}document.getElementById('fc').textContent=favs.size}
+const $=id=>document.getElementById(id);
+$('mon').innerHTML=M.map((m,i)=>`<option value="${i}">${m}</option>`).join('');$('mon').value=mon;
+$('seas').innerHTML=Object.keys(SE).map(k=>`<button class="chip${k==se?' on':''}" data-k="${k}">${k}</button>`).join(' ');
+const sc=(p,m=mon)=>p.sc[m],avg=(p,a)=>a.reduce((x,i)=>x+p.sc[i],0)/a.length;
+function render(){
+ const a=SE[se];let list=P.filter(p=>(p.n+p.s+(p.ap||'')).toLowerCase().includes(qs)&&flt(p));
+ const so=$('sort').value;list.sort(so=='az'?(x,y)=>x.n.localeCompare(y.n):so=='fee'?(x,y)=>fee(x)-fee(y):(x,y)=>(a?avg(y,a)-avg(x,a):sc(y)-sc(x)));
+ $('s2').textContent=P.filter(p=>sc(p)==5).length;
+ $('grid').innerHTML=list.map(p=>{const i=P.indexOf(p),v=a?Math.round(avg(p,a)):sc(p);
+  return `<div class="card" data-i="${i}"><span class="badge">${L[v]}</span><h3>${p.n}</h3><div class="st">${p.s}</div>
+  <div class="meta"><span>Entry <b>${p.fee.split(' ')[0]}</b></span><span>${p.t.split('·')[0]}</span></div><div class="st" style="margin-bottom:10px">✈ ${(p.ap||'').split(' ')[0]}</div>
+  <button class="hrt" data-h="${i}" aria-label="Save to trip">${favs.has(i)?'♥':'♡'}</button><div class="mini">${p.sc.map((s,k)=>`<i class="${k==mon?'cur':''}" style="height:${s*20}%" title="${M[k]}"></i>`).join('')}</div></div>`}).join('');
+ document.querySelectorAll('.card').forEach(c=>io.observe(c));
+}
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.1});
+$('seas').onclick=e=>{if(!e.target.dataset.k)return;se=e.target.dataset.k;document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.k==se));render()};
+$('mon').onchange=e=>{mon=+e.target.value;se='All';document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.k=='All'));render()};
+$('q').oninput=e=>{qs=e.target.value.toLowerCase();render()};
+$('grid').addEventListener('pointermove',e=>{const c=e.target.closest('.card');if(!c)return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;c.style.setProperty('--ry',((x-.5)*10)+'deg');c.style.setProperty('--rx',((.5-y)*10)+'deg');c.style.setProperty('--mx',x*100+'%');c.style.setProperty('--my',y*100+'%')});
+$('grid').addEventListener('pointerleave',()=>document.querySelectorAll('.card').forEach(c=>{c.style.setProperty('--rx','0');c.style.setProperty('--ry','0')}),true);
+$('grid').onclick=e=>{const h=e.target.closest('.hrt');if(h){tog(+h.dataset.h);render();return}const c=e.target.closest('.card');if(c)open(+c.dataset.i)};
+function open(i){const p=P[i],best=p.sc.map((s,k)=>s>=5?M[k]:'').filter(Boolean).join(', ');
+ $('panel').innerHTML=`<button class="x" id="cl">×</button><div class="st">${p.s}</div><h2>${p.n}</h2>
+ <div class="cols"><div><h4>Entrance fee</h4>${p.fee}</div><div><h4>Typical highs</h4>${p.t}</div><div><h4>Peak months</h4>${best||'Shoulder seasons'}</div><div><h4>Nearest airports</h4>${p.ap||'—'}<br><small style="color:var(--mut)">Approx. road miles — confirm routes and service</small></div></div>
+ <h4>Best time — month by month</h4><div class="chart">${p.sc.map((s,k)=>`<div><i style="height:${s*20}%;${k==mon?'outline:1px solid var(--fg)':''}"></i>${M[k]}</div>`).join('')}</div>
+ <div class="cols"><div><h4>RV parking & camping</h4>${p.rv}</div><div><h4>Do here</h4><ul>${p.td.map(t=>`<li>${t}</li>`).join('')}</ul></div></div>
+ <div id="vol"></div><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://forecast.weather.gov/MapClick.php?lat=${p.la}&lon=${p.lo}">Live forecast</a>
+ <a class="btn" target="_blank" rel="noopener" href="https://www.nps.gov/index.htm?q=${encodeURIComponent(p.n)}">NPS official</a>
+ <a class="btn" target="_blank" rel="noopener" href="https://www.recreation.gov/search?q=${encodeURIComponent(p.n)}">Reserve</a>
+ <button class="btn" id="sv">${favs.has(i)?'♥ Saved':'♡ Save to trip'}</button><button class="btn" id="ask">Ask the concierge</button></div><div class="out" id="out"></div>`;
+ $('modal').classList.add('open');$('cl').onclick=close;loadVol(p);$('sv').onclick=()=>{tog(i);$('sv').textContent=favs.has(i)?'♥ Saved':'♡ Save to trip';render()};
+ $('ask').onclick=async()=>{const o=$('out');o.style.display='block';o.textContent='Thinking…';
+  try{const s=window.claude&&await claude.use('sample');if(!s){o.textContent='The concierge lights up when this page is opened in Claude.';return}
+  await s(`You are a luxury RV travel concierge. Park: ${p.n} (${p.s}). Travel month: ${M[mon]}. Give a concise trip plan: ideal 3-day itinerary, RV parking and reservation tips, weather and packing for that month, and best sightseeing. Note that fees and rules should be confirmed with NPS.`,{modelTier:'quick',cache:false,onText:({text})=>o.textContent=text})}
+  catch(e){o.textContent='Concierge unavailable right now ('+(e.code||'error')+').'}}}
+function close(){$('modal').classList.remove('open')}
+$('modal').onclick=e=>{if(e.target.id=='modal')close()};addEventListener('keydown',e=>{if(e.key=='Escape')close()});
+render();
+$('fc').textContent=favs.size;
+[['fFree','free'],['fHook','hook'],['fDrive','drive'],['fFav','fav']].forEach(([id,k])=>$(id).onclick=()=>{F[k]=F[k]?0:1;$(id).classList.toggle('on',!!F[k]);render()});
+$('sort').onchange=render;
+$('rnd').onclick=()=>{const t=P.filter(p=>sc(p)==5);open(P.indexOf(t[Math.floor(Math.random()*t.length)]||P[0]))};
+$('cp').onclick=async()=>{const t='My national parks trip\n'+[...favs].map(i=>{const p=P[i];return '• '+p.n+' ('+p.s+') — '+p.fee+'; best: '+p.sc.map((s,k)=>s>4?M[k]:'').filter(Boolean).join('/')+'; fly: '+(p.ap||'').split(' · ')[0]}).join('\n');try{await navigator.clipboard.writeText(t);$('cp').textContent='Copied ✓'}catch(e){$('cp').textContent='Copy blocked'}setTimeout(()=>$('cp').textContent='Copy trip plan',1800)};
+$('th').onclick=()=>{const r=document.documentElement;r.dataset.theme=getComputedStyle(r).colorScheme.startsWith('light')?'dark':'light'};
+render();
+// 3D terrain hero
+(()=>{try{if(1)return;const cv=$('cv'),R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true}),S=new THREE.Scene(),C=new THREE.PerspectiveCamera(55,1,.1,200);
+C.position.set(0,9,26);C.lookAt(0,0,0);
+const g=new THREE.PlaneGeometry(90,60,90,60);g.rotateX(-Math.PI/2);
+const m=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0xd8b36a,wireframe:true,transparent:true,opacity:.3}));S.add(m);
+const pts=new THREE.Points(g,new THREE.PointsMaterial({color:0xfff1c9,size:.12,transparent:true,opacity:.7}));S.add(pts);
+const pos=g.attributes.position,base=pos.array.slice(),still=matchMedia('(prefers-reduced-motion:reduce)').matches;let mx=0,my=0;
+addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+function rs(){const w=cv.clientWidth,h=cv.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()}addEventListener('resize',rs);rs();
+function f(t){for(let i=0;i<pos.count;i++){const x=base[i*3],z=base[i*3+2];
+ pos.setY(i,Math.sin(x*.18+t)*2.4+Math.cos(z*.22+t*.7)*2+Math.sin((x+z)*.1+t*.5)*3.2)}pos.needsUpdate=true}
+function loop(ms){const t=ms/1800;if(!still)f(t);else f(0);
+ C.position.x+=(mx*10-C.position.x)*.04;C.position.y+=(9-my*5-C.position.y)*.04;C.lookAt(0,0,0);R.render(S,C);if(!still)requestAnimationFrame(loop)}
+requestAnimationFrame(loop)}catch(e){}})();
+// 3D national park scene: mountains, pines, lake, RV on a scenic loop
+(()=>{try{
+if(1)return;const cv=$('cv'),R=new THREE.WebGLRenderer({canvas:cv,antialias:true}),S=new THREE.Scene(),C=new THREE.PerspectiveCamera(50,1,.1,400);
+R.setPixelRatio(Math.min(devicePixelRatio,2));
+const sky=0x0c141c;S.background=new THREE.Color(sky);S.fog=new THREE.Fog(sky,40,140);
+S.add(new THREE.HemisphereLight(0xffd9a0,0x1a2430,.95));
+const sunL=new THREE.DirectionalLight(0xffc27a,1.3);sunL.position.set(-30,25,-40);S.add(sunL);
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const flat=c=>new THREE.MeshLambertMaterial({color:c,flatShading:true});
+const gr=new THREE.Mesh(new THREE.CircleGeometry(150,48),flat(0x1a2a22));gr.rotation.x=-Math.PI/2;S.add(gr);
+const lk=new THREE.Mesh(new THREE.CircleGeometry(7,40),new THREE.MeshPhongMaterial({color:0x2a6f8f,shininess:90,transparent:true,opacity:.88}));lk.rotation.x=-Math.PI/2;lk.position.y=.05;lk.scale.set(1.5,1,1);S.add(lk);
+for(let i=0;i<46;i++){const a=rnd()*6.283,r=38+rnd()*52,h=9+rnd()*24,w=h*.55+rnd()*4,sg=5+Math.floor(rnd()*3);
+ const m=new THREE.Mesh(new THREE.ConeGeometry(w,h,sg),flat(i%3?0x3a4a55:0x4a4540));m.position.set(Math.cos(a)*r,h/2,Math.sin(a)*r);m.rotation.y=rnd()*3;S.add(m);
+ const sn=new THREE.Mesh(new THREE.ConeGeometry(w*.38,h*.38,sg),flat(0xf4f1ea));sn.position.set(m.position.x,h*.81,m.position.z);sn.rotation.y=m.rotation.y;S.add(sn)}
+const tm=new THREE.InstancedMesh(new THREE.ConeGeometry(.7,2.6,6),flat(0x1f4d36),420),d=new THREE.Object3D();let n=0;
+while(n<420){const a=rnd()*6.283,r=14+rnd()*34,x=Math.cos(a)*r,z=Math.sin(a)*r;if(x*x/324+z*z/196<1)continue;const s=.7+rnd()*1.1;d.position.set(x,1.3*s,z);d.scale.setScalar(s);d.updateMatrix();tm.setMatrixAt(n++,d.matrix)}
+S.add(tm);
+const pts=[];for(let i=0;i<24;i++){const t=i/24*6.283;pts.push(new THREE.Vector3(Math.cos(t)*15+Math.sin(t*3)*1.2,.08,Math.sin(t)*11+Math.cos(t*2)*1.2))}
+const cur=new THREE.CatmullRomCurve3(pts,true);
+const rd=new THREE.Mesh(new THREE.TubeGeometry(cur,160,1.1,4,true),flat(0x2b2b2f));rd.scale.y=.04;S.add(rd);
+const rv=new THREE.Group(),bx=(w,h,dd,c,x,y,z)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,dd),new THREE.MeshLambertMaterial({color:c}));m.position.set(x,y,z);rv.add(m)};
+bx(3.4,1.5,1.5,0xf2efe8,0,1.2,0);bx(1,1.1,1.5,0xd8b36a,2.15,1,0);bx(.01,.5,.9,0x223344,.4,1.5,.76);bx(.01,.5,.9,0x223344,.4,1.5,-.76);bx(.2,.4,1,0x223344,2.62,1.2,0);bx(3.4,.12,1.52,0xd8b36a,0,.9,0);
+const wm=new THREE.MeshLambertMaterial({color:0x111111});[[-1,.76],[-1,-.76],[1.6,.76],[1.6,-.76]].forEach(([x,z])=>{const w=new THREE.Mesh(new THREE.CylinderGeometry(.38,.38,.3,12),wm);w.rotation.x=Math.PI/2;w.position.set(x,.38,z);rv.add(w)});
+rv.scale.setScalar(.8);S.add(rv);
+const su=new THREE.Mesh(new THREE.SphereGeometry(5,24,16),new THREE.MeshBasicMaterial({color:0xffc27a,fog:false}));su.position.set(-30,18,-100);S.add(su);
+const ha=new THREE.Mesh(new THREE.SphereGeometry(9,24,16),new THREE.MeshBasicMaterial({color:0xffc27a,fog:false,transparent:true,opacity:.16}));ha.position.copy(su.position);S.add(ha);
+const sp=[];for(let i=0;i<500;i++){const a=rnd()*6.283,e=.15+rnd()*1.2,r=180;sp.push(Math.cos(a)*Math.cos(e)*r,Math.sin(e)*r,Math.sin(a)*Math.cos(e)*r)}
+const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(sp,3));S.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xfff1c9,size:1.6,fog:false,sizeAttenuation:false})));
+const pins=[['Yosemite',-22,15,-24],['Yellowstone',20,19,-34],['Zion',34,13,4],['Glacier',-36,17,8],['Acadia',2,17,-46]].map(([nm,x,y,z])=>{const c=document.createElement('canvas');c.width=256;c.height=64;const g=c.getContext('2d');g.font='600 30px Inter,sans-serif';g.fillStyle='#d8b36a';g.textAlign='center';g.fillText('\u25c6 '+nm,128,42);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),fog:false,transparent:true}));s.scale.set(12,3,1);s.position.set(x,y,z);s.userData.y=y;S.add(s);return s});
+const still=matchMedia('(prefers-reduced-motion:reduce)').matches;let mx=0,my=0,u=0;addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+function rs(){const w=cv.clientWidth,h=cv.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()}addEventListener('resize',rs);rs();
+function loop(ms){const t=ms/1000;if(!still)u=(u+.0006)%1;
+ const p=cur.getPointAt(u),q=cur.getPointAt((u+.01)%1);rv.position.copy(p);rv.rotation.y=Math.atan2(-(q.z-p.z),q.x-p.x);
+ pins.forEach((s,i)=>s.position.y=s.userData.y+Math.sin(t+i*1.7)*.7);
+ const az=still?0:Math.sin(t*.12)*.55+mx*.6;C.position.set(Math.sin(az)*26,10-my*5,Math.cos(az)*26);C.lookAt(0,6,0);
+ R.render(S,C);if(!still)requestAnimationFrame(loop)}
+requestAnimationFrame(loop)}catch(e){}})();
+// Cinematic national park campsite scene
+(()=>{try{
+const cv=$('cv'),R=new THREE.WebGLRenderer({canvas:cv,antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(52,1,.1,600);R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.5;R.shadowMap.enabled=true;R.shadowMap.type=THREE.PCFSoftShadowMap;S.fog=new THREE.FogExp2(0x2b2138,.0075);
+const M3=THREE.MathUtils,mat=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.92,metalness:0},o)),bas=c=>new THREE.MeshBasicMaterial({color:c});
+let sd=11;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;
+const hs=(x,y)=>{const s=Math.sin(x*127.1+y*311.7)*43758.5453;return s-Math.floor(s)};
+const vn=(x,y)=>{const i=Math.floor(x),j=Math.floor(y),fx=x-i,fy=y-j,u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);return hs(i,j)*(1-u)*(1-v)+hs(i+1,j)*u*(1-v)+hs(i,j+1)*(1-u)*v+hs(i+1,j+1)*u*v};
+const fbm=(x,y)=>{let a=.5,f=1,s=0;for(let i=0;i<5;i++){s+=a*vn(x*f,y*f);f*=2;a*=.5}return s};
+const LK={x:-15,z:-3,r:9};
+const H=(x,z)=>{const r=Math.hypot(x,z),m=M3.smoothstep(r,24,85),rid=1-Math.abs(2*fbm(x*.035,z*.035+9)-1);let h=fbm(x*.05+3,z*.05+7)*5*M3.smoothstep(r,4,16)*(1-m)+m*(8+rid*rid*36);h-=(1-M3.smoothstep(Math.hypot(x-LK.x,(z-LK.z)*1.2),LK.r*.5,LK.r*1.4))*4.5;return h};
+const at=(o,x,z,dy)=>{o.position.set(x,H(x,z)+(dy||0),z);return o};
+// terrain with height-based color
+const N=170,g=new THREE.PlaneGeometry(260,260,N,N);g.rotateX(-Math.PI/2);const ps=g.attributes.position,col=new Float32Array(ps.count*3),cc=new THREE.Color();
+const cG=new THREE.Color(0x24402c),cF=new THREE.Color(0x35503a),cR=new THREE.Color(0x6a6258),cS=new THREE.Color(0xf3f1ea),cD=new THREE.Color(0x4a4636);
+for(let i=0;i<ps.count;i++){const x=ps.getX(i),z=ps.getZ(i),h=H(x,z);ps.setY(i,h);
+ if(h<.3)cc.copy(cD);else if(h<14)cc.copy(cG).lerp(cF,h/14);else if(h<30)cc.copy(cF).lerp(cR,(h-14)/16);else cc.copy(cR).lerp(cS,Math.min(1,(h-30)/8));
+ cc.multiplyScalar(.82+.3*hs(x*.7,z*.7));col.set([cc.r,cc.g,cc.b],i*3)}
+g.setAttribute('color',new THREE.BufferAttribute(col,3));g.computeVertexNormals();const ter=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1}));ter.receiveShadow=true;S.add(ter);
+const wt=new THREE.Mesh(new THREE.PlaneGeometry(60,44),new THREE.MeshPhongMaterial({color:0x16435c,shininess:120,specular:0x8899bb,transparent:true,opacity:.9}));wt.rotation.x=-Math.PI/2;wt.position.set(LK.x,-.55,LK.z);S.add(wt);
+// sky, stars, moon, aurora
+S.add(new THREE.Mesh(new THREE.SphereGeometry(420,24,16),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,vertexShader:'varying vec3 p;void main(){p=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec3 p;void main(){float h=clamp(normalize(p).y,0.,1.);vec3 c=mix(vec3(.17,.13,.22),vec3(.02,.04,.1),pow(h,.4));gl_FragColor=vec4(c,1.);}'})));
+const sa=[];for(let i=0;i<700;i++){const a=rnd()*6.283,e=.08+rnd()*1.4,r=400;sa.push(Math.cos(a)*Math.cos(e)*r,Math.sin(e)*r,Math.sin(a)*Math.cos(e)*r)}
+const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(sa,3));const st=new THREE.Points(sg,new THREE.PointsMaterial({color:0xfff1d0,size:1.8,fog:false,sizeAttenuation:false}));S.add(st);
+const glowTex=(c1,c2)=>{const k=document.createElement('canvas');k.width=k.height=128;const x=k.getContext('2d'),gr=x.createRadialGradient(64,64,0,64,64,64);gr.addColorStop(0,c1);gr.addColorStop(1,c2);x.fillStyle=gr;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(k)};
+const glow=(tex,s,x,y,z,p)=>{const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,fog:false}));sp.scale.set(s,s,1);sp.position.set(x,y,z);(p||S).add(sp);return sp};
+const moon=new THREE.Mesh(new THREE.SphereGeometry(8,24,16),new THREE.MeshBasicMaterial({color:0xfff4d6,fog:false}));moon.position.set(-70,105,-250);S.add(moon);glow(glowTex('rgba(255,244,214,.55)','rgba(255,244,214,0)'),120,-70,105,-250);
+const au=new THREE.Mesh(new THREE.PlaneGeometry(340,90),new THREE.ShaderMaterial({transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,fog:false,uniforms:{t:{value:0}},vertexShader:'varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 v;uniform float t;void main(){float a=smoothstep(0.,.25,v.y)*(1.-smoothstep(.45,1.,v.y));a*=.55+.45*sin(v.x*14.+t*.6+sin(v.x*5.+t*.8)*2.);vec3 c=mix(vec3(.1,.95,.55),vec3(.55,.3,.95),v.y);gl_FragColor=vec4(c,a*.5);}'}));au.position.set(40,125,-260);S.add(au);
+// lights
+S.add(new THREE.HemisphereLight(0x6a7eae,0x141a24,1));const mL=new THREE.DirectionalLight(0xa9bfff,.75);mL.position.set(-30,40,-60);mL.castShadow=true;mL.shadow.mapSize.set(2048,2048);Object.assign(mL.shadow.camera,{left:-35,right:35,top:35,bottom:-35,near:1,far:160});mL.shadow.bias=-.0006;mL.shadow.normalBias=.05;S.add(mL);
+// pine forest (instanced, three tiers + trunk)
+const TN=650,tt=[0,1,2].map(i=>new THREE.InstancedMesh(new THREE.ConeGeometry(1.5-i*.35,2.4,7),mat(0xffffff),TN)),tr=new THREE.InstancedMesh(new THREE.CylinderGeometry(.18,.25,1.2,5),mat(0x4a3322),TN);
+const o=new THREE.Object3D(),cl=new THREE.Color();let k=0,tries=0;
+while(k<TN&&tries++<12000){const a=rnd()*6.283,r=11+rnd()*70,x=Math.cos(a)*r,z=Math.sin(a)*r,h=H(x,z);
+ if(h<.6||h>18||Math.hypot(x-LK.x,(z-LK.z)*1.2)<LK.r*1.4||Math.hypot(x-10,z-9)<5||Math.hypot(x-11,z+5)<6)continue;
+ const s=.8+rnd()*1.5;cl.setHSL(.36+rnd()*.07,.42,.1+rnd()*.1);o.scale.setScalar(s);o.position.set(x,h+.6*s,z);o.updateMatrix();tr.setMatrixAt(k,o.matrix);
+ tt.forEach((m,i)=>{o.position.y=h+s*(1.6+i*1.2);o.updateMatrix();m.setMatrixAt(k,o.matrix);m.setColorAt(k,cl)});k++}
+[tr,...tt].forEach(m=>{m.count=k;S.add(m)});
+// campsite
+const camp=at(new THREE.Group(),0,0);S.add(camp);
+for(let i=0;i<9;i++){const a=i/9*6.283,s=new THREE.Mesh(new THREE.DodecahedronGeometry(.28),mat(0x6b6760));s.position.set(Math.cos(a)*1.1,.15,Math.sin(a)*1.1);camp.add(s)}
+[0,1.05,2.1].forEach(a=>{const l=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,1.8,6),mat(0x3b2616));l.rotation.z=1.3;l.rotation.y=a;l.position.y=.25;camp.add(l)});
+const fl=[[.45,1.5,0xff6a1a],[.32,1.1,0xffa530],[.2,.75,0xffe07a]].map(([r,h,c])=>{const f=new THREE.Mesh(new THREE.ConeGeometry(r,h,8),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.92}));f.position.y=h/2+.2;camp.add(f);return f});
+const fireG=glow(glowTex('rgba(255,170,70,.9)','rgba(255,120,30,0)'),9,0,1,0,camp),fireL=new THREE.PointLight(0xff8a3a,2.4,34,2);fireL.position.set(0,1.4,0);camp.add(fireL);fireL.castShadow=true;fireL.shadow.mapSize.set(1024,1024);fireL.shadow.camera.far=34;fireL.shadow.bias=-.003;
+fl.forEach(f=>f.visible=false);
+const fTex=glowTex('rgba(255,215,120,1)','rgba(255,90,10,0)'),smTex=glowTex('rgba(110,110,120,.55)','rgba(110,110,120,0)'),fs=[],sm=[];
+for(let i=0;i<26;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:fTex,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false}));s.userData.p=rnd();camp.add(s);fs.push(s)}
+for(let i=0;i<10;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:smTex,transparent:true,depthWrite:false,fog:false}));s.userData.p=rnd();camp.add(s);sm.push(s)}
+const SN=70,spA=new Float32Array(SN*3),spV=[];for(let i=0;i<SN;i++){spA.set([0,rnd()*5,0],i*3);spV.push([(rnd()-.5)*.01,.008+rnd()*.012,(rnd()-.5)*.01])}
+const spG=new THREE.BufferGeometry();spG.setAttribute('position',new THREE.BufferAttribute(spA,3));camp.add(new THREE.Points(spG,new THREE.PointsMaterial({color:0xffa040,size:3,sizeAttenuation:false,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,fog:false})));
+[[-3,.3,.6,.2],[2.4,.3,2.5,1.9]].forEach(([x,y,z,r])=>{const b=new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,2.4,8),mat(0x4a3322));b.rotation.z=Math.PI/2;b.rotation.y=r+1.2;b.position.set(x,y,z);camp.add(b)});
+// tent (A-frame, glowing door)
+const sh=new THREE.Shape();sh.moveTo(-1.5,0);sh.lineTo(1.5,0);sh.lineTo(0,2.3);sh.closePath();
+const tent=at(new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:3.4,bevelEnabled:false}),mat(0xd9722b,{emissive:0x3a1a08})),-5,-3.5);tent.rotation.y=.96;S.add(tent);
+const ds=new THREE.Shape();ds.moveTo(-.9,0);ds.lineTo(.9,0);ds.lineTo(0,1.6);ds.closePath();const door=new THREE.Mesh(new THREE.ShapeGeometry(ds),bas(0xffb45a));door.position.z=3.42;tent.add(door);
+const tl=new THREE.PointLight(0xffa050,.9,9,2);tl.position.set(0,1,4.2);tent.add(tl);
+// RV camper with lit windows and awning
+const rv=new THREE.Group(),bx=(w,h,dd,c,x,y,z,b)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,dd),b?bas(c):mat(c));m.position.set(x,y,z);rv.add(m);return m};
+bx(4.6,2.2,2,0xe9e6de,0,1.9,0);bx(1.5,1.5,2,0xd8b36a,3.0,1.45,0);bx(4.6,.25,2.05,0xd8b36a,0,1.15,0);
+bx(1.3,.7,.02,0xffcf80,-1,2.2,1.02,1);bx(1.3,.7,.02,0xffcf80,1.1,2.2,1.02,1);bx(1.3,.7,.02,0xffcf80,-1,2.2,-1.02,1);bx(.02,.7,1.1,0x9ab8d8,3.76,1.7,0,1);
+const aw=bx(3.2,.08,1.6,0xb2402e,0,3,1.6);aw.rotation.x=.25;
+const wm=mat(0x111111);[[-1.6,.95],[-1.6,-.95],[1.9,.95],[1.9,-.95]].forEach(([x,z])=>{const w=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.35,14),wm);w.rotation.x=Math.PI/2;w.position.set(x,.5,z);rv.add(w)});
+at(rv,11,-5);rv.rotation.y=-.5;rv.scale.setScalar(1.05);S.add(rv);const rl=new THREE.PointLight(0xffb060,.9,12,2);rl.position.set(0,2.6,2);rv.add(rl);
+// national park entrance sign
+const sg2=new THREE.Group(),bk=document.createElement('canvas');bk.width=512;bk.height=192;{const x=bk.getContext('2d');x.fillStyle='#4b3220';x.fillRect(0,0,512,192);x.strokeStyle='#d8b36a';x.lineWidth=6;x.strokeRect(10,10,492,172);x.fillStyle='#d8b36a';x.textAlign='center';x.font='600 54px Georgia,serif';x.fillText('NATIONAL PARK',256,92);x.font='400 28px Georgia,serif';x.fillStyle='#f1ece1';x.fillText('Camping · RV · Trails',256,142)}
+const bd=new THREE.Mesh(new THREE.PlaneGeometry(5,1.88),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(bk),color:0xb8b0a0}));bd.position.set(0,3.3,.12);sg2.add(bd);
+[-2.2,2.2].forEach(x=>{const p=new THREE.Mesh(new THREE.BoxGeometry(.3,3.5,.3),mat(0x3b2616));p.position.set(x,1.75,0);sg2.add(p)});
+const bb=new THREE.Mesh(new THREE.BoxGeometry(5.2,2.1,.2),mat(0x3b2616));bb.position.set(0,3.3,0);sg2.add(bb);at(sg2,9,9);sg2.rotation.y=-.35;S.add(sg2);
+// fireflies
+const GN=3200,gm=new THREE.InstancedMesh(new THREE.ConeGeometry(.05,.55,3),mat(0xffffff,{side:THREE.DoubleSide}),GN);let gk=0;
+while(gk<GN){const a=rnd()*6.283,r=2+rnd()*20,x=Math.cos(a)*r,z=Math.sin(a)*r,h=H(x,z);if(h<.1||Math.hypot(x-LK.x,(z-LK.z)*1.2)<LK.r*1.1||Math.hypot(x,z)<1.8)continue;const s=.6+rnd()*1.2;o.position.set(x,h+.25*s,z);o.rotation.set((rnd()-.5)*.4,rnd()*6,(rnd()-.5)*.4);o.scale.set(1,s,1);o.updateMatrix();gm.setMatrixAt(gk,o.matrix);cl.setHSL(.24+rnd()*.1,.45,.16+rnd()*.12);gm.setColorAt(gk++,cl)}
+S.add(gm);
+const BN=45,bm=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),mat(0x6b665e),BN);let bj=0;
+while(bj<BN){const a=rnd()*6.283,r=5+rnd()*40,x=Math.cos(a)*r,z=Math.sin(a)*r,h=H(x,z);if(h<.1||Math.hypot(x,z)<4||Math.hypot(x-LK.x,(z-LK.z)*1.2)<LK.r*.9)continue;const s=.4+rnd()*1.6;o.position.set(x,h+.2*s,z);o.rotation.set(rnd()*3,rnd()*3,rnd()*3);o.scale.set(s,s*.7,s*.9);o.updateMatrix();bm.setMatrixAt(bj++,o.matrix)}
+S.add(bm);
+const rk=document.createElement('canvas');rk.width=64;rk.height=256;{const x=rk.getContext('2d'),gr=x.createLinearGradient(0,0,0,256);gr.addColorStop(0,'rgba(255,244,214,0)');gr.addColorStop(.5,'rgba(255,244,214,.55)');gr.addColorStop(1,'rgba(255,244,214,0)');x.fillStyle=gr;x.fillRect(0,0,64,256)}
+const rf=new THREE.Mesh(new THREE.PlaneGeometry(3.5,30),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(rk),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));rf.rotation.x=-Math.PI/2;rf.position.set(LK.x+2,-.5,LK.z);S.add(rf);
+// ---- cozy national park details ----
+const A=[],wood=0x5a3b22,bxm=(w,h,d,c,x,y,z,p,b)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),b?bas(c):mat(c));m.position.set(x,y,z);(p||S).add(m);return m};
+const lt=document.createElement('canvas');lt.width=lt.height=256;{const x=lt.getContext('2d');for(let i=0;i<8;i++){x.fillStyle=i%2?'#6b4528':'#5a3a20';x.fillRect(0,i*32,256,32);x.fillStyle='rgba(0,0,0,.35)';x.fillRect(0,i*32+29,256,3);x.fillStyle='rgba(255,200,140,.08)';x.fillRect(0,i*32+2,256,3)}}
+const logT=new THREE.CanvasTexture(lt);logT.wrapS=logT.wrapT=THREE.RepeatWrapping;logT.repeat.set(2,1);
+// ranger log cabin with glowing windows, porch and chimney smoke
+const cab=at(new THREE.Group(),4,-17);cab.rotation.y=-.15;S.add(cab);
+cab.add(new THREE.Mesh(new THREE.BoxGeometry(8,3.6,5.5),mat(0xffffff,{map:logT})).translateY(1.8));
+const rs2=new THREE.Shape();rs2.moveTo(-4.5,3.5);rs2.lineTo(4.5,3.5);rs2.lineTo(0,5.7);rs2.closePath();
+const roof=new THREE.Mesh(new THREE.ExtrudeGeometry(rs2,{depth:6.3,bevelEnabled:false}),[mat(0x6b4528,{map:logT}),mat(0x3a2a22)]);roof.position.z=-3.15;cab.add(roof);
+bxm(1.1,2,.1,0x3b2616,0,1,2.78,cab);bxm(1.2,1,.08,0xffc46b,-2.4,2,2.78,cab,1);bxm(1.2,1,.08,0xffc46b,2.4,2,2.78,cab,1);
+bxm(8,.2,2,0x6b4a2e,0,.1,3.7,cab);[-3.6,3.6].forEach(x=>bxm(.2,2.6,.2,wood,x,1.3,4.6,cab));bxm(.9,2.4,.9,0x6b665e,2.5,4.9,-1,cab);
+glow(fTex,5,-2.4,2,3.2,cab);glow(fTex,5,2.4,2,3.2,cab);const cl2=new THREE.PointLight(0xffb060,1.2,18,2);cl2.position.set(0,2,5);cab.add(cl2);
+const cs=[];for(let i=0;i<7;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:smTex,transparent:true,depthWrite:false,fog:false}));s.userData.p=i/7;cab.add(s);cs.push(s)}
+A.push(t=>cs.forEach(s=>{const u=(t*.07+s.userData.p)%1;s.position.set(2.5+u*3,6.3+u*6,-1);s.scale.setScalar(1+u*4);s.material.opacity=Math.sin(u*Math.PI)*.2}));
+// warm string lights on wooden poles
+const pole=(x,z,h)=>{S.add(at(new THREE.Mesh(new THREE.CylinderGeometry(.08,.1,h,6),mat(wood)),x,z,h/2));return new THREE.Vector3(x,H(x,z)+h,z)};
+const strand=(a,b,n,sag)=>{for(let i=0;i<=n;i++){const u=i/n,p=new THREE.Vector3().lerpVectors(a,b,u);p.y-=Math.sin(u*Math.PI)*sag;const s=new THREE.Mesh(new THREE.SphereGeometry(.09,8,6),bas(0xffe0a8));s.position.copy(p);S.add(s);glow(fTex,.9,p.x,p.y,p.z).material.opacity=.55}};
+const pA=pole(-6,2.5,3.6),pB=pole(6.5,3,3.6),pC=pole(10,-1.5,3.4),pD=pole(-8,-5,3.2);strand(pA,pB,18,1.1);strand(pB,pC,10,.7);strand(pA,pD,10,.7);
+const sl=new THREE.PointLight(0xffc27a,.9,14,2);sl.position.set(0,3.3,2.8);S.add(sl);
+// picnic table with lantern
+const tb=at(new THREE.Group(),-1.5,-6.2);tb.rotation.y=.4;S.add(tb);
+bxm(2.6,.12,1,wood,0,.95,0,tb);bxm(2.6,.1,.4,wood,0,.55,.85,tb);bxm(2.6,.1,.4,wood,0,.55,-.85,tb);[-1,1].forEach(s=>bxm(.12,.9,1.8,wood,s*1,.5,0,tb));
+bxm(.25,.35,.25,0xffc46b,.5,1.18,0,tb,1);const ll=new THREE.PointLight(0xffb55a,.8,10,2);ll.position.set(.5,1.4,0);tb.add(ll);glow(fTex,2.2,.5,1.2,0,tb);
+// camp chairs facing the fire
+[[-2.6,-1.6],[2.9,-1.2]].forEach(([x,z])=>{const c=at(new THREE.Group(),x,z);c.rotation.y=Math.atan2(-x,-z);S.add(c);bxm(.8,.08,.8,0x2f5a8a,0,.5,0,c);bxm(.8,.8,.08,0x2f5a8a,0,.95,-.4,c).rotation.x=-.25;[[-.35,-.35],[.35,-.35],[-.35,.35],[.35,.35]].forEach(([a,b])=>bxm(.06,.5,.06,0x222222,a,.25,b,c))});
+// trailhead signpost
+const ts=at(new THREE.Group(),5.5,5.5);ts.rotation.y=-.6;S.add(ts);bxm(.2,3.2,.2,wood,0,1.6,0,ts);
+const pl=(txt,y,ry)=>{const k=document.createElement('canvas');k.width=320;k.height=64;const x=k.getContext('2d');x.fillStyle='#6b4528';x.fillRect(0,0,320,64);x.fillStyle='#f1e2c4';x.font='600 26px Georgia,serif';x.textAlign='center';x.fillText(txt,160,42);const m=new THREE.Mesh(new THREE.BoxGeometry(2.2,.45,.08),mat(0xffffff,{map:new THREE.CanvasTexture(k)}));m.position.set(.9,y,.12);m.rotation.y=ry;ts.add(m)};
+pl('Visitor Center \u00b7 0.4 mi',2.9,.15);pl('Summit Trail \u00b7 3.2 mi',2.35,-.1);pl('Lake Loop \u00b7 1.1 mi',1.8,.12);
+// bear-proof food locker
+bxm(1.6,1,.8,0x7c8a8f,-8,H(-8,-2)+.5,-2).rotation.y=.4;bxm(1.65,.12,.85,0x4a5559,-8,H(-8,-2)+1.05,-2).rotation.y=.4;
+// canoe on the lake
+const cn=new THREE.Mesh(new THREE.SphereGeometry(1,20,8,0,6.283,0,Math.PI/2),mat(0xb2402e,{side:THREE.DoubleSide,roughness:.5}));cn.rotation.x=Math.PI;cn.scale.set(2.4,.55,.75);
+const cg=new THREE.Group();cg.add(cn);cg.position.set(-10.5,-.35,-4);cg.rotation.y=.5;S.add(cg);A.push(t=>{cg.position.y=-.35+Math.sin(t*.8)*.04;cg.rotation.z=Math.sin(t*.6)*.03});
+// grazing deer (buck and doe)
+const deer=(x,z,ry,buck)=>{const g=at(new THREE.Group(),x,z);g.rotation.y=ry;S.add(g);const m=mat(0x7a5236),dk=mat(0x3a2818),P=(geo,mt,px,py,pz,sx,sy,sz,par)=>{const e=new THREE.Mesh(geo,mt);e.position.set(px,py,pz);e.scale.set(sx||1,sy||1,sz||1);(par||g).add(e);return e};
+ P(new THREE.SphereGeometry(.5,12,8),m,0,1.2,0,1.6,.7,.62);P(new THREE.SphereGeometry(.12,8,6),mat(0xf1ece1),-.8,1.3,0);
+ [[.5,.2],[.5,-.2],[-.5,.2],[-.5,-.2]].forEach(([a,b])=>P(new THREE.CylinderGeometry(.05,.035,.95,6),dk,a,.5,b));
+ const hd=new THREE.Group();hd.position.set(.75,1.35,0);g.add(hd);P(new THREE.CylinderGeometry(.1,.14,.75,6),m,.3,.3,0,1,1,1,hd).rotation.z=-.7;P(new THREE.SphereGeometry(.2,10,8),m,.62,.58,0,1.5,.8,.8,hd);
+ if(buck)[-.12,.12].forEach(s=>{const a=P(new THREE.CylinderGeometry(.015,.03,.7,4),dk,.55,.95,s,1,1,1,hd);a.rotation.x=s*3;a.rotation.z=.3});
+ A.push(t=>hd.rotation.z=-.6+Math.sin(t*.35+x)*.5)};
+deer(16,-9,.4,1);deer(19,-13,-.2,0);
+// lake mist
+const mi=[];for(let i=0;i<8;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:smTex,transparent:true,depthWrite:false,opacity:.14,color:0xaab8d0}));s.scale.set(14,5,1);s.position.set(LK.x+(rnd()-.5)*18,.6,LK.z+(rnd()-.5)*12);S.add(s);mi.push(s)}
+A.push(t=>mi.forEach((s,i)=>{s.material.opacity=.11+Math.sin(t*.3+i)*.04}));
+S.traverse(m=>{if(m.isMesh&&m!==ter&&m!==gm&&m!==rf&&!m.material.isMeshBasicMaterial&&!m.material.isShaderMaterial&&!m.material.isMeshPhongMaterial){m.castShadow=m.receiveShadow=true}});
+const FN=60,ffA=new Float32Array(FN*3),ffB=[];for(let i=0;i<FN;i++){const a=rnd()*6.283,r=3+rnd()*12;ffB.push([Math.cos(a)*r,.6+rnd()*3.5,Math.sin(a)*r,rnd()*6])}
+const ffG=new THREE.BufferGeometry();ffG.setAttribute('position',new THREE.BufferAttribute(ffA,3));S.add(new THREE.Points(ffG,new THREE.PointsMaterial({color:0xd8ff7a,size:3.5,sizeAttenuation:false,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false})));
+const still=matchMedia('(prefers-reduced-motion:reduce)').matches;let mx=0,my=0;addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+function rs(){const w=cv.clientWidth,h=cv.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()}addEventListener('resize',rs);rs();
+function loop(ms){const t=still?0:ms/1000;
+ fs.forEach((s,i)=>{const u=(t*.55+s.userData.p)%1,w=(1-u)*1.5+.25;s.position.set(Math.sin(t*1.3+i)*.22*u,.35+u*2.3,Math.cos(t*1.1+i*2)*.2*u);s.scale.set(w*.8,w*1.5,1);s.material.opacity=Math.sin(u*Math.PI)*.85;s.material.color.setRGB(1,1-u*.55,.35-u*.3)});
+ sm.forEach((s,i)=>{const u=(t*.08+s.userData.p)%1;s.position.set(u*2+Math.sin(t*.4+i)*.6,2.5+u*8,Math.sin(t*.3+i)*.8);s.scale.setScalar(2+u*5);s.material.opacity=Math.sin(u*Math.PI)*.16});
+ fireL.intensity=2.4+Math.sin(t*4.1)*.3+Math.sin(t*2.3+1)*.25+Math.sin(t*6.7)*.12;fireG.scale.setScalar(9+Math.sin(t*3.5)*.6);
+ for(let i=0;i<SN;i++){const v=spV[i];spA[i*3]+=v[0]+Math.sin(t*3+i)*.002;spA[i*3+1]+=v[1];spA[i*3+2]+=v[2];if(spA[i*3+1]>6){spA[i*3]=(rnd()-.5)*.5;spA[i*3+1]=.8;spA[i*3+2]=(rnd()-.5)*.5}}spG.attributes.position.needsUpdate=true;
+ for(let i=0;i<FN;i++){const b=ffB[i];ffA[i*3]=b[0]+Math.sin(t*.5+b[3])*1.2;ffA[i*3+1]=b[1]+Math.sin(t*.8+b[3]*2)*.5;ffA[i*3+2]=b[2]+Math.cos(t*.4+b[3])*1.2}ffG.attributes.position.needsUpdate=true;
+ au.material.uniforms.t.value=t;A.forEach(f=>f(t));st.rotation.y=t*.004;
+ const az=Math.sin(t*.1)*.8+mx*.7;C.position.set(Math.sin(az)*15,4.5-my*2.5,Math.cos(az)*15);C.lookAt(0,6,-8);
+ R.render(S,C);if(!still)requestAnimationFrame(loop)}
+requestAnimationFrame(loop)}catch(e){}})();
+function loadVol(p){fetch('volumes.json').then(r=>r.ok?r.json():null).then(v=>{const a=v&&v[p.n],el=document.getElementById('vol');if(!a||!el||a.length!=12)return;const mx=Math.max(...a)||1;el.innerHTML='<h4>Monthly searches</h4><div class="chart">'+a.map((n,k)=>'<div><i style="height:'+Math.round(n/mx*100)+'%"></i>'+M[k]+'<br>'+(n>=1000?(n/1000).toFixed(1)+'k':n)+'</div>').join('')+'</div><small style="color:var(--mut)">Source: your keyword export (volumes.json)</small>'}).catch(()=>{})}
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+// 2D animated national park camp scene
+(()=>{const q=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg',mk=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
+let sd=5;const r=()=>(sd=(sd*16807)%2147483647)/2147483647;
+const st=q('#stars');for(let i=0;i<90;i++){const c=mk('circle',{class:'star',cx:r()*1600,cy:r()*520,r:.6+r()*1.3,fill:'#fff4dc'},st);c.style.animationDelay=(-r()*6)+'s';c.style.animationDuration=(3+r()*4)+'s'}
+const pine=(x,b,h,f,p)=>{const w=h*.32,y=b-h,P=[[0,0],[.5,.38],[.22,.38],[.75,.7],[.3,.7],[1,1]],a=P.map(([u,v])=>(x+u*w)+','+(y+v*h)),c=P.slice().reverse().map(([u,v])=>(x-u*w)+','+(y+v*h));const e=mk('polygon',{points:a.concat(c).join(' '),fill:f,class:'pn'},p);e.style.animationDelay=(-r()*6)+'s'};
+const pb=q('#pb');for(let x=-20;x<1650;x+=22+r()*10)pine(x,775+r()*10,70+r()*95,'#0e1a2e',pb);
+const pf=q('#pf');for(let x=10;x<330;x+=48+r()*20)pine(x,860,150+r()*90,'#070f1a',pf);for(let x=1330;x<1620;x+=48+r()*20)pine(x,860,150+r()*90,'#070f1a',pf);
+const sp=q('#sp'),L=sp.getTotalLength(),bg=q('#bulbs');for(let i=0;i<=26;i++){const p=sp.getPointAtLength(L*i/26);mk('circle',{cx:p.x,cy:p.y,r:11,fill:'url(#gl)',opacity:.55},bg);const c=mk('circle',{class:'bl',cx:p.x,cy:p.y,r:3.4,fill:'#ffe3a8'},bg);c.style.animationDelay=(-r()*3)+'s'}
+const ff=q('#ffs');for(let i=0;i<26;i++){const c=mk('circle',{class:'ff',cx:300+r()*1000,cy:640+r()*190,r:2.4,fill:'#d8ff7a',filter:'url(#b2)'},ff);c.style.setProperty('--dx',(r()*80-40)+'px');c.style.setProperty('--dy',(r()*60-40)+'px');c.style.animationDelay=(-r()*9)+'s';c.style.animationDuration=(7+r()*6)+'s'}
+const em=q('#embers');for(let i=0;i<16;i++){const c=mk('circle',{class:'em',cx:(r()-.5)*30,cy:-20,r:1.6+r()*1.4,fill:'#ffb347'},em);c.style.setProperty('--dx',(r()*90-45)+'px');c.style.animationDelay=(-r()*5)+'s';c.style.animationDuration=(4+r()*3)+'s'}
+const pr=[...document.querySelectorAll('.par')];addEventListener('pointermove',e=>{const x=e.clientX/innerWidth-.5;pr.forEach(g=>g.style.transform='translateX('+(-x*g.dataset.p*2)+'px)')});
+if(matchMedia('(prefers-reduced-motion:reduce)').matches)document.querySelectorAll('animate,animateTransform').forEach(a=>a.remove());
+})();
+</script></body></html>
